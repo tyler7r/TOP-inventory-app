@@ -1,6 +1,10 @@
 const Product = require('../models/product');
 const asyncHandler = require('express-async-handler');
 
+exports.index = asyncHandler(async (req, res, next) => {
+    
+})
+
 exports.product_list = asyncHandler(async (req, res, next) => {
 
 })
@@ -35,6 +39,6 @@ exports.product_update_get = asyncHandler(async (req, res, next) => {
 exports.product_update_post = asyncHandler(async (req, res, next) => {
 
     asyncHandler(async (req, res, next) => {
-        
+
     })
 })
