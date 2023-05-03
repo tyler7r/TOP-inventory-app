@@ -1,0 +1,8 @@
+extends layout 
+block content 
+    h1= title 
+    
+    h2= instance.product.name
+    div Size: #{instance.size}
+    div Description: #{instance.product.description}
+    div Product ID: #{instance._id}

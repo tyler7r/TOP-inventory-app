@@ -2,9 +2,9 @@ extends layout
 
 block content 
     h1= title
-    ul(id='section-menu')
+    ul(id='section-list')
         each section in section_list 
-            li(class='section-menu-btn-container')
-                a(class='section-menu-btn' href=section.url) #{section.name}
+            li(class='section-list-item')
+                a(class='section-list-btn' href=section.url) #{section.name}
         else
             li There are no sections.

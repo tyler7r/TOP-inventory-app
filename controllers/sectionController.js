@@ -25,7 +25,7 @@ exports.section_detail = asyncHandler(async (req, res, next) => {
 
     res.render('section_detail', {
         title: `${section.name}'s Section`,
-        section: section.name,
+        section: section,
         section_products: productsInSection,
     })
 })

@@ -1,0 +1,10 @@
+extends layout 
+
+block content 
+    h1= title 
+    ul(id='category-list')
+        each category in category_list 
+            li(class='category-list-item')
+                a(class='category-list-btn' href=category.url) #{category.name}
+        else 
+            li There are no categories.

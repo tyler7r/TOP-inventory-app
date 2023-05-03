@@ -1,0 +1,10 @@
+extends layout
+block content 
+    h1= title 
+    ul(class='product-instances')
+        each instance in product_instances
+            li(class='product-instance-item')
+                a(class='product-instance-btn' href=(instance.url)) #{product.name}
+                div Size: #{instance.size}
+        else 
+            li Out of stock.

@@ -1,0 +1,20 @@
+extends layout 
+block content 
+    h1= title 
+    ul(id='product-list')
+        each product in product_list 
+            li(class='product-list-item')
+                a(class='product-list-btn' href=(product.url)) #{product.name}
+                div(class='product-list-details')
+                    div Description: #{product.description}
+                    div Price: #{product.price} 
+                    div # Left: #{product.quantity} 
+                    div Item Sections:
+                        ul 
+                            each section in product.section 
+                                li  #{section.name}
+                            else 
+                                li There are no associated sections. 
+                    div Item Category: #{product.category.name}
+        else
+            li There are no products.

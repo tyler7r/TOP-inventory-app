@@ -1,0 +1,10 @@
+extends layout 
+block content 
+    h1= title 
+    ul(id='category-products')
+        each product in category_products 
+            li(class='category-products-item')
+                a(class='category-products-btn' href=(product.url)) #{product.name}
+                |  #{product.description}
+        else
+            li There are no products in this category
