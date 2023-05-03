@@ -1,0 +1,14 @@
+extends layout 
+
+block content
+ title= title
+ h1= title
+ div(id='new-inventory-menu')
+    div(class='new-inventory-container')
+        a(class='new-inventory-btn' href='/inventory/product/create') Add New Product
+    div(class='new-inventory-container')
+        a(class='new-inventory-btn' href='/inventory/category/create') Add New Category
+    div(class='new-inventory-container')
+        a(class='new-inventory-btn' href='/inventory/section/create') Add New Section
+    div(class='new-inventory-container')
+        a(class='new-inventory-btn' href='/inventory/productinstance/create') Add New Available Product

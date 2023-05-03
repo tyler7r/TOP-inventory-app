@@ -14,14 +14,15 @@ mongoose.set("strictQuery", false)
 
 const mongoDB = 'mongodb+srv://tyler7r:t0071998@cluster0.jucvol1.mongodb.net/TOP-inventory-project?retryWrites=true&w=majority';
 
-main().catch((err) => console.log(err))
 const main = async() => {
   await mongoose.connect(mongoDB)
 }
 
+main().catch((err) => console.log(err));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(express.json());

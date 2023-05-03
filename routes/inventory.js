@@ -5,7 +5,7 @@ const product_controller = require('../controllers/productController');
 const category_controller = require('../controllers/categoryController');
 const section_controller = require('../controllers/sectionController');
 const product_instance_controller = require('../controllers/productinstanceController');
-const section = require('../models/section');
+const new_controller = require('../controllers/newController');
 
 /// Product Routes ///
 
@@ -80,6 +80,10 @@ router.post('/productinstance/:id/update', product_instance_controller.productin
 router.get('/productinstances', product_instance_controller.productinstance_list);
 
 router.get('/productinstance/:id', product_instance_controller.productinstance_detail);
+
+/// New Route ///
+
+router.get('/new', new_controller.new);
 
 module.exports = router;
 

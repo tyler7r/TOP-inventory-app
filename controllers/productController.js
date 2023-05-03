@@ -1,8 +1,18 @@
 const Product = require('../models/product');
+const ProductInstance = require('../models/productinstance');
 const asyncHandler = require('express-async-handler');
 
 exports.index = asyncHandler(async (req, res, next) => {
-    
+    const [allProducts, allInstances] = await Promise.all([
+        Product.countDocuments({}).exec(),
+        ProductInstance.countDocuments({}).exec(),
+    ])
+
+    res.render('index', {
+        title: "Inventory Home",
+        product_count: allProducts, 
+        instance_count: allInstances,
+    })
 })
 
 exports.product_list = asyncHandler(async (req, res, next) => {

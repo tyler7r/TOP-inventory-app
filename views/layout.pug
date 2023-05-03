@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    header(id='main-header')
+      div(id='title')
+        a(id='header-title' href='/') Tyler's Inventory
+      div(id='header-menu')
+        a(class='header-menu-btn' href='/inventory/sections') Sections 
+        a(class='header-menu-btn' href='/inventory/categories') Categories 
+        a(class='header-menu-btn' href='/inventory/products') Products 
+        a(class='header-menu-btn' href='/inventory/productinstances') Available Products
+        a(class='header-menu-btn' href='/inventory/new') Add to Inventory
+    block content
