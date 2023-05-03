@@ -1,6 +1,7 @@
 const Section = require('../models/section');
 const Product = require('../models/product')
 const asyncHandler = require('express-async-handler');
+const { body, validationResult } = require('express-validator');
 
 exports.section_list = asyncHandler(async (req, res, next) => {
     const sections = await Section.find().exec();
@@ -31,13 +32,30 @@ exports.section_detail = asyncHandler(async (req, res, next) => {
 })
 
 exports.section_create_get = asyncHandler(async (req, res, next) => {
-
+    res.render("section_form")
 })
 
 exports.section_create_post = [
-
+    body("section", "Section must contain at least 2 characters").trim().isLength({ min: 2 }).escape(),
     asyncHandler(async (req, res, next) => {
-
+        const errors = validationResult(req)
+        const section = new Section({ name: req.body.section });
+        if (!errors.isEmpty()) {
+            res.render("section_form", {
+                title: "Create New Section",
+                section: section,
+                errors: errors.array()
+            });
+            return
+        } else {
+            const sectionExists = await Section.findOne({ name:req.body.section });
+            if (sectionExists) {
+                res.redirect(sectionExists.url)
+            } else {
+                await section.save()
+                res.redirect(section.url)
+            }
+        }
     })
 ]
 

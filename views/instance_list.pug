@@ -5,7 +5,7 @@ block content
         each instance in instance_list 
             li(class='instance-list-item')
                 div(class='instance-list-details')
-                    div #{instance.product.name} 
+                    a(class='instance-link-btn' href=(instance.url)) #{instance.product.name} 
                     div Size: #{instance.size} 
                     div Price: #{instance.product.price} 
                     div ID: #{instance._id}

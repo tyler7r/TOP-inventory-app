@@ -1,0 +1,13 @@
+extends layout 
+block content 
+    h1= title 
+
+    form(method='POST' action='')
+        div.form-group
+            label(for='category') Category Name: 
+            input#category.form-control(type='text' placeholder='Socks, Shorts, etc.' name='category' value=(undefined === category ? '' : category.name) required='true')
+        button.form-submit(type='submit') Add Category
+    if errors 
+        ul 
+            each error in errors 
+                li!= error.msg

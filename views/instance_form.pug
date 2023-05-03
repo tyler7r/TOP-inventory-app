@@ -1,0 +1,17 @@
+extends layout 
+block content 
+
+    h1= title 
+    form(method='POST' action='')
+        div.form-group 
+            label(for='product') Product: 
+            select#product.form-control(type='select' placeholder='Select Product' name='product' required='true')
+                for product in product_list 
+                    option(value=product._id selected=(selected_product==product._id.toString() ? 'selected': false)) #{product.name} 
+            label(for='size') Size: 
+            input#size.form-control(type='text' placeholder='S, M, L, 8.5, 10, etc.' name='size' required='true')
+        button.submit-btn(type='submit') Add New Inventory
+    if errors
+       ul 
+        for error in errors
+          li!= error.msg

@@ -1,0 +1,13 @@
+extends layout 
+block content 
+    h1= title 
+
+    form(method='POST' action='')
+        div.form-group
+            label(for='section') Section Name: 
+            input#section.form-control(type='text' placeholder='Infant, Maternity, etc.' name='section' value=(undefined === section ? '' : section.name) required='true')
+        button.form-submit(type='submit') Add Section
+    if errors 
+        ul 
+            each error in errors 
+                li!= error.msg

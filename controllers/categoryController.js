@@ -1,6 +1,7 @@
 const Category = require('../models/category');
 const Product = require('../models/product')
 const asyncHandler = require('express-async-handler');
+const { body, validationResult } = require('express-validator');
 
 exports.category_list = asyncHandler(async (req, res, next) => {
     const categories = await Category.find().exec()
@@ -31,13 +32,30 @@ exports.category_detail = asyncHandler(async (req, res, next) => {
 })
 
 exports.category_create_get = asyncHandler(async (req, res, next) => {
-
+    res.render('category_form')
 })
 
 exports.category_create_post = [
+    body('category', "Category must be at least 3 characters long.").trim().isLength({ min: 3 }).escape(),
 
     asyncHandler(async (req, res, next) => {
-
+        const errors = validationResult(req);
+        const category = new Category({ name: req.body.category});
+        if (!errors.isEmpty()) {
+            res.render('category_form', {
+                title: "Create New Category",
+                category: category,
+                errors: errors.array()
+            })
+        } else {
+            const categoryExists = await Category.findOne({ name: req.body.category })
+            if (categoryExists) {
+                res.redirect(categoryExists.url)
+            } else {
+                await category.save()
+                res.redirect(category.url)
+            }
+        }
     })
 ]
 
