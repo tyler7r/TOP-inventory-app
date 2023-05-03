@@ -1,0 +1,12 @@
+extends layout 
+
+block content 
+    h1= section 
+
+    ul(id='section-products')
+        each product in section_products 
+            li(class='section-product-item')
+                a(class='section-product-btn' href=product.url) #{product.name}
+                | #{product.description}
+        else
+            li There are no products in this section.

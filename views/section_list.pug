@@ -1,0 +1,10 @@
+extends layout 
+
+block content 
+    h1= title
+    ul(id='section-menu')
+        each section in section_list 
+            li(class='section-menu-btn-container')
+                a(class='section-menu-btn' href=section.url) #{section.name}
+        else
+            li There are no sections.
