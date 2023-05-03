@@ -4,10 +4,12 @@ const userArgs = process.argv.slice(2);
 const Product = require("./models/product");
 const Section = require("./models/section");
 const Category = require("./models/category");
+const ProductInstance = require('./models/productinstance');
 
 const sections = [];
 const categories = [];
 const products = [];
+const productinstances = [];
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false); // Prepare for Mongoose 7
@@ -23,6 +25,7 @@ async function main() {
     await createSections();
     await createCategories();
     await createProducts();
+    await createProductInstances();
     console.log("Debug: Closing mongoose");
     mongoose.connection.close();
 }
@@ -60,6 +63,18 @@ products.push(product);
 console.log(`Added product: ${name}`);
 }
 
+async function productinstanceCreate(product, size) {
+    let productinstancedetail = {
+        product: product, 
+        size: size,
+    }
+
+    const productinstance = new ProductInstance(productinstancedetail);
+    await productinstance.save();
+    productinstances.push(productinstance);
+    console.log(`Added productinstance: ${product, size}`)
+}
+
 async function createSections() {
     console.log("Adding genres");
     await Promise.all([
@@ -91,7 +106,7 @@ async function createProducts() {
         "Nike Blazers",
         "Simple, white shoe with black Nike logo that look great with any outfit",
         120,
-        17,
+        2,
         categories[2],
         [sections[0], sections[2]]
         ),
@@ -99,7 +114,7 @@ async function createProducts() {
         "High Waisted Leopard-Print Leggings",
         "Extremely comfortable leggings, that add a little extra oomph to your outfit",
         45,
-        11,
+        2,
         categories[0],
         [sections[1]]
         ),
@@ -107,7 +122,7 @@ async function createProducts() {
         "Blue Light Glasses",
         "Stylish glasses that can be worn in or out, helps save your eyes from too much blue light exposure.",
         65,
-        8,
+        2,
         categories[3],
         [sections[0], sections[1], sections[2], sections[3]]
         ),
@@ -115,7 +130,7 @@ async function createProducts() {
         "Classic Black Dress",
         "This classic style of dress never goes out of style.",
         30,
-        23,
+        1,
         categories[4],
         [sections[1], sections[3]]
         ),
@@ -123,7 +138,7 @@ async function createProducts() {
         "Tan Polo",
         "This polo is great for events that you can't wear a T-shirt too",
         35,
-        6,
+        2,
         categories[1],
         [sections[0], sections[2]]
         ),
@@ -131,7 +146,7 @@ async function createProducts() {
         "Test Product 5",
         "Description of test product 5",
         130,
-        19,
+        2,
         categories[6],
         [sections[1], sections[3]]
         ),
@@ -139,9 +154,28 @@ async function createProducts() {
         "Test Product 2",
         "Description of test product 2",
         10,
-        67,
+        2,
         categories[4],
         [sections[0]]
         ),
     ]);
+}
+
+async function createProductInstances() {
+    console.log("Adding product instances");
+    await Promise.all([
+        productinstanceCreate(products[0], "10.5"),
+        productinstanceCreate(products[1], "M"),
+        productinstanceCreate(products[2], "S"),
+        productinstanceCreate(products[3], "M"),
+        productinstanceCreate(products[4], "M"),
+        productinstanceCreate(products[5], "XL"),
+        productinstanceCreate(products[6], "S"),
+        productinstanceCreate(products[0], "8.5"),
+        productinstanceCreate(products[1], "L"),
+        productinstanceCreate(products[2], "L"),
+        productinstanceCreate(products[4], "XL"),
+        productinstanceCreate(products[5], "S"),
+        productinstanceCreate(products[6], "L")
+    ])
 }
