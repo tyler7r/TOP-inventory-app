@@ -1,6 +1,7 @@
 extends layout 
 
 block content 
+    a(href='/inventory' class='return-btn') Back Home
     h1= title 
     ul(id='category-list')
         each category in category_list 

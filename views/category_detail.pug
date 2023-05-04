@@ -1,5 +1,6 @@
 extends layout 
 block content 
+    a(href='/inventory/categories' class='return-btn') Back to Categories
     h1= title 
     ul(id='category-products')
         each product in category_products 
@@ -8,3 +9,8 @@ block content
                 |  #{product.description}
         else
             li There are no products in this category
+
+        p
+            a(href=(category.url + '/delete')) Delete Category 
+        p 
+            a(href=(category.url + '/update')) Update Category

@@ -66,20 +66,14 @@ exports.product_create_post = [
         }
         next()
     },
-
-    // body('sectionSelect', "Section must be specified").trim().isLength({ min: 1 }).escape(),
-    body("sectionSelect.*").escape(),
     body('categorySelect', "Category must be specified").trim().isLength({ min: 1 }).escape(),
     body('name', "Name must be at least 3 characters").trim().isLength({ min: 3 }).escape(),
     body('description', "Description must be at least 3 characters long").trim().isLength({ min: 3 }).escape(),
-    body('price', "Price must be specified").trim().isLength({ min: 1 }).isNumeric().escape(),
-    body('quantity', "Quantity must be specified").trim().isLength({ min: 1 }).isNumeric().escape(),
+    body('price', "Price must be specified").trim().isLength({ min: 1 }).isInt().escape(),
+    body('quantity', "Quantity must be specified").trim().isLength({ min: 1 }).isInt().escape(),
+    body("sectionSelect.*").escape(),
 
     asyncHandler(async (req, res, next) => {
-        const [allSections, allCategories] = await Promise.all([
-            Section.find().exec(),
-            Category.find().exec(),
-        ])
         const errors = validationResult(req)
         const product = new Product({
             name: req.body.name,
@@ -89,7 +83,12 @@ exports.product_create_post = [
             price: req.body.price,
             quantity: req.body.quantity,
         })
+        console.log(req.body.sectionSelect, req.body.categorySelect);
         if (!errors.isEmpty()) {
+            const [allSections, allCategories] = await Promise.all([
+                Section.find().exec(),
+                Category.find().exec(),
+            ])
             for (const section of allSections) {
                 if (product.section.indexOf(section._id) > -1) {
                     section.checked = 'true'
@@ -99,10 +98,11 @@ exports.product_create_post = [
                 title: "Add New Product",
                 sections: allSections,
                 categories: allCategories,
-                // selected_category: product.category._id,
+                selected_category: product.category._id,
                 product: product,
                 errors: errors.array(),
             })
+            return
         } else {
             await product.save()
             res.redirect(product.url)
@@ -111,11 +111,37 @@ exports.product_create_post = [
 ]
 
 exports.product_delete_get = asyncHandler(async (req, res, next) => {
+    const [product, allProductInstances] = await Promise.all([
+        Product.findById(req.params.id).exec(),
+        ProductInstance.find({ product: req.params.id }).populate('product').exec()
+    ])
 
+    if (product === null) {
+        res.redirect('/inventory/products')
+    }
+    res.render('product_delete', {
+        title: "Delete Product",
+        product: product,
+        product_instances: allProductInstances
+    })
 })
 
 exports.product_delete_post = asyncHandler(async (req, res, next) => {
-
+    const [product, allProductInstances] = await Promise.all([
+        Product.findById(req.params.id).exec(),
+        ProductInstance.find({ product: req.params.id }).populate('product').exec(),
+    ])
+    if (allProductInstances.length > 0) {
+        res.render('product_delete', {
+            title: "Delete Product",
+            product: product,
+            product_instances: allProductInstances,
+        })
+        return
+    } else {
+        await Product.findByIdAndRemove(req.params.id)
+        res.redirect('/inventory/products')
+    }
 })
 
 exports.product_update_get = asyncHandler(async (req, res, next) => {

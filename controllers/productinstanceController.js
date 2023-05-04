@@ -65,11 +65,20 @@ exports.productinstance_create_post = [
 ]
 
 exports.productinstance_delete_get = asyncHandler(async (req, res, next) => {
+    const instance = await ProductInstance.findById(req.params.id).populate('product').exec()
 
+    if (instance === null) {
+        res.redirect('/inventory/productinstances')
+    }
+    res.render('instance_delete', {
+        title: "Delete Item",
+        instance: instance,
+    })
 })
 
 exports.productinstance_delete_post = asyncHandler(async (req, res, next) => {
-
+    await ProductInstance.findByIdAndRemove(req.params.id).exec()
+    res.redirect('/inventory/productinstances');
 })
 
 exports.productinstance_update_get = asyncHandler(async (req, res, next) => {

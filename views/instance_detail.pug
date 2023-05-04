@@ -1,8 +1,14 @@
 extends layout 
 block content 
+    a(href='/inventory/productinstances' class='return-btn') Back to Available Products
     h1= title 
     
     h2= instance.product.name
     div Size: #{instance.size}
     div Description: #{instance.product.description}
     div Product ID: #{instance._id}
+
+    p
+        a(href=(instance.url+'/delete')) Delete Item 
+    p
+        a(href=(instance.url+'update')) Update Item

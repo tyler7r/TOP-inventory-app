@@ -1,5 +1,6 @@
 extends layout
-block content 
+block content
+    a(href='/inventory/products' class='return-btn') Back to Products
     h1= title 
     ul(class='product-instances')
         each instance in product_instances
@@ -8,3 +9,8 @@ block content
                 div Size: #{instance.size}
         else 
             li Out of stock.
+
+        p
+            a(href=(product.url+'/delete')) Delete Product 
+        p 
+            a(href=(product.url+'/update')) Update Product

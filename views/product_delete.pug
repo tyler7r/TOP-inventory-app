@@ -1,0 +1,20 @@
+extends layout 
+block content 
+    a(href=product.url class='return-btn') Back to Product Details
+    h1=title 
+
+    if product_instances.length 
+        h3 You must delete these items before you can delete this product: 
+        ul
+            each instance in product_instances 
+                li 
+                    a(href=instance.url) #{instance.product.name}
+                    |  #{instance.size}  #{instance._id}
+            else 
+                li There are no instances.            
+    else 
+        p Do you really want to delete this product?
+        form(method='POST' action='')
+            div.form-group
+                input#productid.form-control(type='hidden' name='productid' value=product._id required='true')
+            button.delete-btn(type='submit') Confirm Delete

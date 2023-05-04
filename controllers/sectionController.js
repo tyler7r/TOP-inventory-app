@@ -60,11 +60,35 @@ exports.section_create_post = [
 ]
 
 exports.section_delete_get = asyncHandler(async (req, res, next) => {
-
+    const [section, productsInSection] = await Promise.all([
+        Section.findById(req.params.id),
+        Product.find({ section: req.params.id })
+    ])
+    if (section === null) {
+        res.redirect('/inventory/sections')
+    }
+    res.render('section_delete', {
+        title: "Delete Section",
+        section: section,
+        section_products: productsInSection
+    })
 })
 
 exports.section_delete_post = asyncHandler(async (req, res, next) => {
-
+    const [section, productsInSection] = await Promise.all([
+        Section.findById(req.params.id),
+        Product.find({ section: req.params.id })
+    ])
+    if (productsInSection.length > 0) {
+        res.render('section_delete', {
+            title: "Delete Section",
+            section: section,
+            section_products: productsInSection
+        })
+    } else {
+        await Section.findByIdAndRemove(req.params.id)
+        res.redirect('/inventory/sections')
+    }
 })
 
 exports.section_update_get = asyncHandler(async (req, res, next) => {

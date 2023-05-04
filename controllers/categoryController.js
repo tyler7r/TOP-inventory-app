@@ -60,11 +60,37 @@ exports.category_create_post = [
 ]
 
 exports.category_delete_get = asyncHandler(async (req, res, next) => {
-    
+    const [category, productsInCategory] = await Promise.all([
+        Category.findById(req.params.id),
+        Product.find({ category: req.params.id }),
+    ])
+
+    if (category === null) {
+        res.redirect('/inventory/categories')
+    }
+    res.render('category_delete', {
+        title: "Delete Category",
+        category: category,
+        category_products: productsInCategory
+    })
 })
 
 exports.category_delete_post = asyncHandler(async (req, res, next) => {
-
+    const [category, productsInCategory] = await Promise.all([
+        Category.findById(req.params.id),
+        Product.find({ category: req.params.id })
+    ])
+    if (productsInCategory.length > 0) {
+        res.render('category_delete', {
+            title: "Delete Category",
+            category: category,
+            category_products: productsInCategory
+        })
+        return
+    } else {
+        await Category.findByIdAndRemove(req.params.id)
+        res.redirect('/inventory/categories')
+    }
 })
 
 exports.category_update_get = asyncHandler(async (req, res, next) => {

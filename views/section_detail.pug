@@ -1,6 +1,7 @@
 extends layout 
 
 block content 
+    a(href='/inventory/sections' class='return-btn') Back to Sections 
     h1= title 
 
     ul(id='section-products')
@@ -10,3 +11,8 @@ block content
                 | #{product.description}
         else
             li There are no products in this section.
+
+        p 
+            a(href=(section.url)+'/delete') Delete Section 
+        p 
+            a(href=(section.url)+'/update') Update Section

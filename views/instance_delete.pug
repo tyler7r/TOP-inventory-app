@@ -1,0 +1,15 @@
+extends layout 
+block content 
+    a(href=(instance.url) class='return-btn') Back to Item Details
+    
+    h1= title 
+
+    h2= instance.product.name
+    h3= instance.size 
+    h4= instance._id 
+
+    p Do you really want to delete this item?
+    form(method='POST' action='')
+        div.form-group 
+            input#instanceid.form-control(type='hidden' name='instanceid', required='true' value=instance._id)
+        button.delete-btn(type='submit') Delete

@@ -1,0 +1,19 @@
+extends layout 
+block content 
+    a(href=section.url class='return-btn') Back to Section Details
+    h1= title 
+
+    if section_products.length 
+        p You must delete these products before you can delete this section: 
+            ul 
+                each product in section_products 
+                    li 
+                        a(href=product.url) #{product.name} 
+                else 
+                    li There are no products
+    else 
+        p Are you sure you want to delete this section 
+        form(method='POST' action='')
+            div.form-group 
+                input#sectionid.form-control(type='hidden' name='sectionid' value=section._id)
+            button.delete-btn(type='submit') Confirm Delete

@@ -1,32 +1,37 @@
 extends layout 
 block content 
+    a(href='/inventory/new' class='return-btn') Back to Add Item Page
     h1= title
 
     form(method='POST' action='')
         div.form-group
             label(for='name') Name:
-            input#name.form-control(type='text', placeholder='Nike Shoes, red earrings, etc.', required='true', value=(undefined===product ? '' : product.name))
+            input#name.form-control(type='text', name='name' placeholder='Nike Shoes, red earrings, etc.', required='true', value=(undefined===product ? '' : product.name))
         div.form-group
             label(for='description') Description: 
-            input#description.form-control(type='textarea', placeholder='What is cool about this product', value=(product===undefined ? '' : product.description), required='true')
+            input#description.form-control(type='textarea', name='description' placeholder='What is cool about this product', value=(undefined===product ? '' : product.description), required='true')
         div.form-group
             label(for='price') Price: $
-            input#price.form-control(type='text', placeholder=0, value=(product===undefined ? '' : product.price), required='true')
+            input#price.form-control(type='text', name='price' placeholder=0, value=(undefined===product ? '' : product.price), required='true')
         div.form-group
             label(for='quantity') Quantity: 
-            input#price.form-control(type='text', placeholder=0, value=(product===undefined ? '' : product.quantity), required='true')
+            input#quantity.form-control(type='text', name='quantity' placeholder=0, value=(undefined===product ? '' : product.quantity), required='true')
         div.form-group
             label(for='categorySelect') Category: 
             select#categorySelect.form-control(type='select', placeholder='Select Product Category', name='categorySelect', required='true')
                 for category in categories 
-                    option(value=category._id, selected=(selected_category==category._id.toString() ? 'selected': false)) #{category.name} 
+                    if product
+                        option(value=category._id selected=(category._id.toString()===product.category._id.toString() ? 'selected': false)) #{category.name}
+                    else
+                        option(value=category._id) #{category.name}
         div.form-group
             label Section: 
             div
                 for section in sections
-                    input.checkbox-input(type='checkbox', name='categorySelect', id=section._id, value=section._id, checked=section.checked)
-                    label(for=section._id) #{section.name} 
-            button.submit-btn(type='submit') Add Product
+                    div 
+                        input.checkbox-input(type='checkbox', name='sectionSelect', id=section._id, value=section._id, checked=section.checked)
+                        label(for=section._id) #{section.name} 
+        button.submit-btn(type='submit') Add Product
         if errors 
             ul 
                 for error in errors 
