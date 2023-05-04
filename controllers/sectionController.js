@@ -92,11 +92,35 @@ exports.section_delete_post = asyncHandler(async (req, res, next) => {
 })
 
 exports.section_update_get = asyncHandler(async (req, res, next) => {
+    const section = await Section.findById(req.params.id).exec()
 
+    if (section === null) {
+        const err = new Error('Section not found');
+        err.status = 404
+        return next(err)
+    }
+    res.render('section_form', {
+        title: "Update Section",
+        section: section,
+    })
 })
 
 exports.section_update_post = asyncHandler(async (req, res, next) => {
+    body("section", "Section must contain at least 2 characters").trim().isLength({ min: 2 }).escape(),
+
     asyncHandler(async (req, res, next) => {
-        
+        const errors = validationResult(req)
+        const section = new Section({ name: req.body.section, _id: req.params.id })
+        if (!errors.isEmpty()) {
+            res.render("section_form", {
+                title: "Update Section",
+                section: section,
+                errors: errors.array() 
+            })
+            return
+        } else {
+            const thesection = await Section.findByIdAndUpdate(req.params.id, section, {})
+            res.redirect(thesection.url);
+        }
     })
 })

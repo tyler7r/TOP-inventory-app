@@ -94,12 +94,39 @@ exports.category_delete_post = asyncHandler(async (req, res, next) => {
 })
 
 exports.category_update_get = asyncHandler(async (req, res, next) => {
-
+    const category = await Category.findById(req.params.id).exec()
+    if (category === null) {
+        const err = new Error("Category not found.")
+        err.status = 404;
+        return next(err)
+    }
+    res.render('category_form', {
+        title: "Update Category",
+        category: category,
+    })
 })
 
 exports.category_update_post = asyncHandler(async (req, res, next) => {
-    
-    asyncHandler(async (req, res, post) => {
+    body('category', "Category must be at least 3 characters long.").trim().isLength({ min: 3 }).escape(),
 
+    asyncHandler(async (req, res, post) => {
+        const errors = validationResult(req)
+
+        const category = new Category({
+            name: req.body.category,
+            _id: req.params.id,
+        })
+
+        if (!errors.isEmpty()) {
+            res.render("category_form", {
+                title: "Update Category",
+                category: category,
+                errors: errors.array(),
+            }) 
+            return
+        } else {
+            const thecategory = await Category.findByIdAndUpdate(req.params.id, category, {})
+            res.redirect(thecategory.url);
+        }
     })
 })

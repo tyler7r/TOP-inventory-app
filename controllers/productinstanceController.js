@@ -82,12 +82,51 @@ exports.productinstance_delete_post = asyncHandler(async (req, res, next) => {
 })
 
 exports.productinstance_update_get = asyncHandler(async (req, res, next) => {
+    const [instance, allProducts] = await Promise.all([
+        ProductInstance.findById(req.params.id).populate('product').exec(),
+        Product.find().exec(),
+    ])
 
+    if (instance === null) {
+        const err = new Error("Instance not found.")
+        err.status = 404;
+        return next(err)
+    }
+    res.render("instance_form", {
+        title: "Update Item",
+        product_list: allProducts,
+        selected_product: instance.product._id,
+        productInstance: instance,
+    })
 })
 
 exports.productinstance_update_post = asyncHandler(async (req, res, next) => {
+    body('product', "Product must be specified").trim().isLength({ min: 1 }).escape(),
+    body('size', "Size must be implemented").trim().isLength({ min: 1 }).escape(),
 
     asyncHandler(async (req, res, next) => {
-        
+        const errors = validationResult(req)
+
+        const productInstance = new ProductInstance({
+            product: req.body.product,
+            size: req.body.size,
+            _id: req.params.id,
+        })
+
+        if (!errors.isEmpty()) {
+            const allProducts = await Book.find({}, "name").exec()
+
+            res.render("instance_form", {
+                title: "Update Item",
+                product_list: allProducts,
+                selected_product: productInstance.book._id,
+                errors: errors.array(),
+                productInstance: productInstance,
+            })
+            return
+        } else {
+            theinstance = await ProductInstance.findByIdAndUpdate(req.params.id, productInstance, {})
+            res.redirect(theinstance.url)
+        }
     })
 })

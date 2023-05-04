@@ -145,12 +145,86 @@ exports.product_delete_post = asyncHandler(async (req, res, next) => {
 })
 
 exports.product_update_get = asyncHandler(async (req, res, next) => {
+    const [product, allSections, allCategories] = await Promise.all([
+        Product.findById(req.params.id).populate("section").populate('category').exec(),
+        Section.find().exec(),
+        Category.find().exec(),
+    ])
 
+    if (product === null) {
+        const err = new Error("Product not found.")
+        err.status = 404;
+        return next(err)
+    }
+    for (const section of allSections) {
+        for (const product_s of product.section) {
+            if (section._id.toString() === product_s._id.toString()) {
+                section.checked = 'true'
+            }
+        }
+    }
+    res.render('product_form', {
+        title: "Update Product",
+        sections: allSections,
+        categories: allCategories,
+        product: product,
+    })
 })
 
 exports.product_update_post = asyncHandler(async (req, res, next) => {
+    (req, res, next) => {
+        if (!(req.body.section instanceof Array)) {
+            if (typeof req.body.section === 'undefined') {
+                req.body.section = []
+            } else {
+                req.body.section = new Array(req.body.section)
+            }
+        }
+        next()
+    },
+
+    body('categorySelect', "Category must be specified").trim().isLength({ min: 1 }).escape(),
+    body('name', "Name must be at least 3 characters").trim().isLength({ min: 3 }).escape(),
+    body('description', "Description must be at least 3 characters long").trim().isLength({ min: 3 }).escape(),
+    body('price', "Price must be specified").trim().isLength({ min: 1 }).isInt().escape(),
+    body('quantity', "Quantity must be specified").trim().isLength({ min: 1 }).isInt().escape(),
+    body("sectionSelect.*").escape(),
 
     asyncHandler(async (req, res, next) => {
+        const errors = validationResult(req)
 
+        const product = new Product({
+            name: req.body.name,
+            section: req.body.sectionSelect === 'undefined' ? [] : req.body.section,
+            category: req.body.categorySelect,
+            description: req.body.description,
+            price: req.body.price,
+            quantity: req.body.quantity,
+            _id: req.params.id,
+        })
+
+        if (!errors.isEmpty()) {
+            console.log('here');
+            const [allSections, allCategories] = await Promise.all([
+                Section.find().exec(),
+                Category.find().exec(),
+            ])
+            for (const section of allSections) {
+                if (product.section.indexOf(section._id) > -1) {
+                    section.checked = 'true'
+                }
+            }
+            res.render('product_form', {
+                title: "Update Product",
+                sections: allSections,
+                categories: allCategories,
+                product: product,
+                errors: errors.array(),
+            })
+            return
+        } else {
+            const theproduct = await Product.findByIdAndUpdate(req.params.id, product, {})
+            res.redirect(theproduct.url);
+        }
     })
 })
